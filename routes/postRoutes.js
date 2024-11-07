@@ -10,10 +10,15 @@ router.post('/', async (req, res) => {
   res.json(post);
 });
 
-// Get all posts
 router.get('/', async (req, res) => {
-  const posts = await Post.find().populate('user', ['username']);
-  res.json(posts);
+  try {
+    const posts = await Post.find()
+      .populate('user', 'username') // Ensure only 'username' is populated
+      .exec(); // Use .exec() for better error handling
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 module.exports = router;
